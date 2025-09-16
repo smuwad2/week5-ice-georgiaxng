@@ -28,9 +28,26 @@
     <script>
 
 
-        function getData() {
+        async function getData() {
             var limitInput = document.getElementById("limit").value
             var typeInput = document.getElementById("type").value
+
+            try {
+                const response = await axios.get('/data', {
+                    params: {
+                        'limit': limitInput,
+                        'type': typeInput
+                    }
+                })
+                generateTable(response.data.records, typeInput)
+
+            } catch {
+                console.log("error");
+            }
+
+        }
+
+        function generateTable(data, typeInput) {
             var resultsDiv = document.getElementById("result");
 
             // Clear the div before adding new content
@@ -44,52 +61,37 @@
             var h2Element = document.createElement('h2');
             h2Element.innerText = typeInput;
 
-
             resultsDiv.appendChild(h2Element)
-            axios.get('/data', {
-                params: {
-                    'limit': limitInput,
-                    'type': typeInput
+            // Add header row
+            const headers = [];
+            // get headers
+            for (const key in data[0]) {
+                headers.push(key)
+            }
+            const headerRow = document.createElement("tr");
+            headers.forEach(headerText => {
+                const th = document.createElement("th");
+                th.textContent = headerText;
+                headerRow.appendChild(th);
+            });
+            tbody.appendChild(headerRow);
+
+            // iterate over the 'data' array
+            data.forEach(item => {
+                const row = document.createElement("tr");
+
+                // iterate over the values of the object
+                for (const key in item) {
+                    console.log(key)
+                    const cell = document.createElement("td");
+                    cell.textContent = item[key];
+                    row.appendChild(cell);
                 }
-            })
-                .then(response => {
 
-                    const data = response.data.records;
-                    // Add header row
-                    const headers = [];
-                    // get headers
-                    for (const key in data[0]) {
-                        headers.push(key)
-                    }
-                    const headerRow = document.createElement("tr");
-                    headers.forEach(headerText => {
-                        const th = document.createElement("th");
-                        th.textContent = headerText;
-                        headerRow.appendChild(th);
-                    });
-                    tbody.appendChild(headerRow);
-
-                    // iterate over the 'data' array
-                    data.forEach(item => {
-                        const row = document.createElement("tr");
-
-                        // iterate over the values of the object
-                        for (const key in item) {
-                            console.log(key)
-                            const cell = document.createElement("td");
-                            cell.textContent = item[key];
-                            row.appendChild(cell);
-                        }
-
-                        // Add new row to the table body
-                        tbody.appendChild(row);
-                    });
-                    resultsDiv.appendChild(table)
-
-                })
-                .catch(error => {
-                    console.log(error.message)
-                });
+                // Add new row to the table body
+                tbody.appendChild(row);
+            });
+            resultsDiv.appendChild(table)
         }
 
 
