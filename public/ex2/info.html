@@ -27,15 +27,19 @@
     </div>
     <script>
 
-        const resultsDiv = document.getElementById("result")
 
         function getData() {
             var limitInput = document.getElementById("limit").value
             var typeInput = document.getElementById("type").value
             var resultsDiv = document.getElementById("result");
 
-            // Clear the div before adding new content
-            resultsDiv.innerHTML = "";
+                    // Clear the div before adding new content
+        resultsDiv.innerHTML = "";
+            // Create table elements
+            const table = document.createElement("table");
+            // table.className = "table";
+            const tbody = document.createElement("tbody");
+            table.appendChild(tbody);
 
             var h2Element = document.createElement('h2');
             h2Element.innerText = typeInput;
@@ -50,13 +54,17 @@
             })
                 .then(response => {
 
-                    // Create table elements
-                    const table = document.createElement("table");
-                    const tbody = document.createElement("tbody");
-                    table.appendChild(tbody);
 
+
+
+
+                    const data = response.data.records;
                     // Add header row
-                    const headers = ["Name", "Age", "City"];
+                    const headers = [];
+                    // get headers
+                    for (const key in data[0]) {
+                        headers.push(key)
+                    }
                     const headerRow = document.createElement("tr");
                     headers.forEach(headerText => {
                         const th = document.createElement("th");
@@ -65,14 +73,13 @@
                     });
                     tbody.appendChild(headerRow);
 
-                    const data = response.data.records;
-
                     // iterate over the 'data' array
                     data.forEach(item => {
                         const row = document.createElement("tr");
 
                         // The inner loop should iterate over the values of the object
                         for (const key in item) {
+                            console.log(key)
                             const cell = document.createElement("td");
                             cell.textContent = item[key];
                             row.appendChild(cell);
