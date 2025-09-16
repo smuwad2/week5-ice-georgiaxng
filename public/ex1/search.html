@@ -29,7 +29,7 @@
             var searchInput = document.getElementById('nameInput').value
             axios.get('/suggest', {
                 params: {
-                    query: searchInput,
+                    'query': searchInput,
                 }
             })
                 .then(response => {
