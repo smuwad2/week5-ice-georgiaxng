@@ -48,6 +48,11 @@
         }
 
         function generateTable(data, typeInput) {
+            if (!data || data.length === 0) {
+                console.log("No data to display.");
+                return;
+            }
+
             var resultsDiv = document.getElementById("result");
 
             // Clear the div before adding new content
@@ -75,6 +80,7 @@
                 headerRow.appendChild(th);
             });
             tbody.appendChild(headerRow);
+
 
             // iterate over the 'data' array
             data.forEach(item => {
